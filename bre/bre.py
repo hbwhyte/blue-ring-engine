@@ -23,15 +23,22 @@ class Choice:
 def init():
     with open("data/sample.csv") as story_file:
         csv_reader = csv.reader(story_file, delimiter=',')
-        next(csv_reader, None)
+        next(csv_reader, None)  # Skips header row
         pages = {}
         first_page = "Not Set Yet"
+
         for row in csv_reader:
+            page_id = row[0]
             if first_page == "Not Set Yet":
-                first_page = row[0]
-            choice1 = Choice(row[2], row[3])
-            choice2 = Choice(row[4], row[5])
-            pages[row[0]] = Page(row[0], row[1], [choice1, choice2])
+                first_page = page_id
+            pages[page_id] = Page(page_id, row[1], [])
+            col_index = 2
+
+            while col_index < len(row) and row[col_index] != '':
+                choice = Choice(row[col_index], row[col_index+1])
+                pages[page_id].choices.append(choice)
+                col_index += 2
+
         story = Story(pages, first_page)
         return story
 
@@ -46,22 +53,26 @@ def start_game():
 
 
 def show_options(page):
-    print(page.page)
-    print('----')
-    print(page.text+'\n')
-    print(f'1. {page.choices[0].choice}')
-    print(f'2. {page.choices[1].choice}')
+    print(f'\n{page.page}')
+    print(f'---- \n{page.text}')
 
-    while True:
-        try:
-            choice = input('Which do you choose? (1/2) ')
-            if choice == '1':
-                return page.choices[0].next_page
-            if choice == '2':
-                return page.choices[1].next_page
-            print("Invalid response entered. Do you choose 1 or 2? ")
-        except Exception as e:
-            print(e)
+    while len(page.choices) > 0:
+        print()
+        for i, choice in enumerate(page.choices):
+            print(f'{i + 1}. {choice.choice}')
+
+        selection = input("Which do you choose? ")
+
+        if selection.isdigit():
+            index = int(selection) - 1
+            if 0 <= index < len(page.choices):
+                return page.choices[int(selection)-1].next_page
+            else:
+                print("\tSorry, didn't get that. Please enter one of the numbers listed. ")
+        else:
+            print(f'\tWhat are you going on about?? {selection} is not a valid number. ')
+
+    return ''
 
 
 if __name__ == '__main__':
