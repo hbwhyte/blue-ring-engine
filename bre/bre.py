@@ -1,4 +1,6 @@
 import csv
+import sys
+import os
 
 
 class Story:
@@ -20,8 +22,8 @@ class Choice:
         self.next_page = next_page
 
 
-def init():
-    with open("data/sample.csv") as story_file:
+def init(game_path):
+    with open(game_path) as story_file:
         csv_reader = csv.reader(story_file, delimiter=',')
         next(csv_reader, None)  # Skips header row
         pages = {}
@@ -43,9 +45,11 @@ def init():
         return story
 
 
-def start_game():
-    print("Start the game!")
-    story = init()
+def start_game(game_path):
+    while not os.path.isfile(game_path):
+        game_path = input("Sorry, we can't seem to find that file. Try again? ")
+    print("Story time!")
+    story = init(game_path)
     next_page = show_options(story.pages[story.current_page])
     while next_page is not '':
         next_page = show_options(story.pages[next_page])
@@ -76,4 +80,7 @@ def show_options(page):
 
 
 if __name__ == '__main__':
-    start_game()
+    if len(sys.argv) > 1:
+        start_game(sys.argv[1])
+    else:
+        start_game("data/metal.csv")
