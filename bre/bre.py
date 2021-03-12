@@ -1,25 +1,7 @@
 import csv
 import sys
 import os
-
-
-class Story:
-    def __init__(self, pages, current_page):
-        self.pages = pages
-        self.current_page = current_page
-
-
-class Page:
-    def __init__(self, page, text, choices):
-        self.page = page
-        self.text = text
-        self.choices = choices
-
-
-class Choice:
-    def __init__(self, choice, next_page):
-        self.choice = choice
-        self.next_page = next_page
+from story import *
 
 
 def init(game_path):
@@ -27,12 +9,12 @@ def init(game_path):
         csv_reader = csv.reader(story_file, delimiter=',')
         next(csv_reader, None)  # Skips header row
         pages = {}
-        first_page = "Not Set Yet"
+        first_page_id = "Not Set Yet"
 
         for row in csv_reader:
             page_id = row[0]
-            if first_page == "Not Set Yet":
-                first_page = page_id
+            if first_page_id == "Not Set Yet":
+                first_page_id = page_id
             pages[page_id] = Page(page_id, row[1], [])
             col_index = 2
 
@@ -41,36 +23,39 @@ def init(game_path):
                 pages[page_id].choices.append(choice)
                 col_index += 2
 
-        story = Story(pages, first_page)
-        return story
+        story = Story(pages)
+        book = Book(first_page_id, story, None)  # todo: add metadata
+
+        return book
 
 
 def start_game(game_path):
     while not os.path.isfile(game_path):
         game_path = input("Sorry, we can't seem to find that file. Try again? ")
     print("Story time!")
-    story = init(game_path)
-    next_page = show_options(story.pages[story.current_page])
-    while next_page is not '':
-        next_page = show_options(story.pages[next_page])
+    book = init(game_path)
+    story = book.story
+    next_page_id = show_options(story.pages[book.first_page_id])
+    while next_page_id is not '':
+        next_page_id = show_options(story.pages[next_page_id])
     print("Game over!")
 
 
 def show_options(page):
-    print(f'\n{page.page}')
+    print(f'\n{page.id}')
     print(f'---- \n{page.text}')
 
     while len(page.choices) > 0:
         print()
         for i, choice in enumerate(page.choices):
-            print(f'{i + 1}. {choice.choice}')
+            print(f'{i + 1}. {choice.text}')
 
         selection = input("Which do you choose? ")
 
         if selection.isdigit():
             index = int(selection) - 1
             if 0 <= index < len(page.choices):
-                return page.choices[int(selection)-1].next_page
+                return page.choices[int(selection)-1].next_page_id
             else:
                 print("\tSorry, didn't get that. Please enter one of the numbers listed. ")
         else:
