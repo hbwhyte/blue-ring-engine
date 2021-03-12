@@ -40,7 +40,7 @@ class Page:
 class Choice:
     """An individual Choice in a BRE Page.
 
-    The choice has text and the the """
+    The choice has text and the id of the next page to turn to."""
     def __init__(self, text, next_page_id):
         self.text = text
         self.next_page_id = next_page_id
