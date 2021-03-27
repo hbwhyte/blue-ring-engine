@@ -1,0 +1,12 @@
+page,text,choice 1,choice 1 page,choice 2,choice 2 page
+1,"Walking across a bridge on a dark and stormy night, your attention is drawn below to the two figures in raincoats moving below. One of them is holding a metal detector, the other, a shovel. They appear to have found something and are digging in the dirt.",Ignore them and go home.,2,Look closer.,3
+2,"It's none of your business. You'd rather go home and have a nice cup of tea.
+
+The end.",,,,
+3,"It's hard to make out much from here, the rain is heavy, and the figures are hooded. You do see a stairway leading down at the end of the bridge however. Or you could just call out to them.",Go down to the river bank.,4,Call out to the figures.,5
+4,"As you get closer, you realise that they are digging up a body. One of the figures notices you and, without warning, pulls out a gun. The last thing you hear is the bang, and everything goes black.
+
+The end.",,,,
+5,"""Hello there!"", you call out. ""What have you found?""
+
+But your shouts are covered by the sound of the wind and rain, and by their digging.",Give up and go home.,2,Go down the stairs for a closer look,4
